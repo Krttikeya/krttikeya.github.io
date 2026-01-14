@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kartikeya Nisal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: monospace;
+    }
+    main {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    section {
+      text-align: center;
+    }
+    .name {
+      font-size: 48px;
+      min-width: fit-content;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      transition: opacity 0.3s;
+    }
+    nav a {
+      display: block;
+      font-size: 22px;
+      min-width: fit-content;
+      letter-spacing: 1px;
+      margin: 12px 0;
+      color: #aaa;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    .content-page {
+      max-width: 600px;
+      text-align: left;
+      padding: 20px;
+    }
+    .content-page h2 {
+      font-size: 36px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .content-page p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      color: #aaa;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+    }
+    .back-btn:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Home Page -->
+    <section id="homePage" class="page active">
+      <div class="name" id="nameGlitch" data-text="Kartikeya Nisal">Kartikeya Nisal</div>
+      <nav>
+        <a class="glitch-link" data-text="About me" onclick="showPage('aboutPage')">About me</a>
+        <a class="glitch-link" data-text="GitHub" href="https://github.com/krttikeya" target="_blank">GitHub</a>
+        <a class="glitch-link" data-text="LinkedIn" href="https://in.linkedin.com/in/krttikeya" target="_blank">LinkedIn</a>
+        <a class="glitch-link" data-text="Contact" onclick="showPage('contactPage')">Contact</a>
+      </nav>
+    </section>
+
+    <!-- About Page -->
+    <section id="aboutPage" class="page content-page">
+      <h2>About Me</h2>
+      <p>Hello, My name is Kartikeya.</p>
+      <p>• I'm studying Electronics & Telecommunication Engineering</p>
+      <p>• Currently interested in FPGAs</p>
+      <div class="back-btn" onclick="showPage('homePage')">← Back</div>
+    </section>
+
+    <!-- Contact Page -->
+    <section id="contactPage" class="page content-page">
+      <h2>Contact</h2>
+      <p>📫 How to reach me: @krttikeya (Instagram, Linkedin)</p>
+      <div class="back-btn" onclick="showPage('homePage')">← Back</div>
+    </section>
+  </main>
+  <script>
+    const glitchChars = 'क░<>/श्री\ङ \|𑀱!ञ@#$%^&*';
+    
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      document.getElementById(pageId).classList.add('active');
+    }
+    
+    function glitchText(element, duration = 1000) {
+      const originalText = element.getAttribute('data-text');
+      const length = originalText.length;
+      let frame = 0;
+      const totalFrames = duration / 50;
+      let isRunning = true;
+      
+      const interval = setInterval(() => {
+        if (!isRunning) {
+          clearInterval(interval);
+          element.textContent = originalText;
+          return;
+        }
+        
+        let glitchedText = '';
+        const revealIndex = Math.floor((frame / totalFrames) * length);
+        
+        for (let i = 0; i < length; i++) {
+          if (i < revealIndex) {
+            glitchedText += originalText[i];
+          } else if (originalText[i] === ' ') {
+            glitchedText += ' ';
+          } else {
+            glitchedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+          }
+        }
+        
+        element.textContent = glitchedText;
+        frame++;
+        
+        if (frame >= totalFrames) {
+          clearInterval(interval);
+          element.textContent = originalText;
+          isRunning = false;
+        }
+      }, 50);
+      
+      return () => { isRunning = false; };
+    }
+    
+    // Initial glitch effect on name
+    const nameElement = document.getElementById('nameGlitch');
+    setTimeout(() => glitchText(nameElement, 1500), 100);
+    
+    // Hover glitch on name
+    nameElement.addEventListener('mouseenter', () => {
+      glitchText(nameElement, 400);
+    });
+    
+    // Hover glitch on links
+    document.querySelectorAll('.glitch-link').forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        glitchText(link, 400);
+      });
+    });
+  </script>
+</body>
+</html>
