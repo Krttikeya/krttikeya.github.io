@@ -5,56 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kartikeya Nisal</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       background: #000;
       color: #fff;
       font-family: monospace;
     }
+
+    #dither-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      image-rendering: pixelated;
+      opacity: 0.85;
+    }
+
     main {
+      position: relative;
+      z-index: 1;
       width: 100vw;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     section {
       text-align: center;
+      width: 100%;
     }
+
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Home / Art sub-menu ── */
     .name {
       font-size: 48px;
-      min-width: fit-content;
       letter-spacing: 2px;
       margin-bottom: 30px;
-      transition: opacity 0.3s;
     }
     nav a {
       display: block;
       font-size: 22px;
-      min-width: fit-content;
       letter-spacing: 1px;
-      margin: 12px 0;
+      margin: 12px auto;
       color: #aaa;
       text-decoration: none;
       cursor: pointer;
       transition: color 0.3s;
+      text-align: center;
     }
-    nav a:hover {
-      color: #fff;
-    }
-    .page {
-      display: none;
-    }
-    .page.active {
-      display: block;
-    }
+    nav a:hover { color: #fff; }
+
+    /* ── Generic content page ── */
     .content-page {
       max-width: 600px;
-      text-align: left;
+      text-align: center;
       padding: 20px;
     }
     .content-page h2 {
@@ -67,114 +76,513 @@
       line-height: 1.8;
       margin-bottom: 20px;
     }
+
+    /* ── Back button ── */
     .back-btn {
-      display: inline-block;
+      display: block;
       margin-top: 30px;
       padding: 10px 20px;
       color: #aaa;
       cursor: pointer;
       text-align: center;
+      font-family: monospace;
+      font-size: 16px;
+      background: none;
+      border: none;
       width: 100%;
     }
-    .back-btn:hover {
+    .back-btn:hover { color: #fff; }
+
+    /* ══════════════════════════════
+       ART SUB-MENU PAGE
+    ══════════════════════════════ */
+    #artMenuPage {
+      padding: 20px;
+    }
+    #artMenuPage h2 {
+      font-size: 36px;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    /* ══════════════════════════════
+       GALLERY PAGE
+    ══════════════════════════════ */
+    #galleryPage {
+      max-width: 900px;
+      width: 90vw;
+      padding: 40px 20px;
+    }
+    #galleryPage h2 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .art-filters {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .filter-btn {
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+      padding: 5px 14px;
+      background: transparent;
+      border: 1px solid #444;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      border-color: #fff;
       color: #fff;
+    }
+
+    .art-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .art-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      background: #111;
+      border: 1px solid #222;
+    }
+    .art-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .art-item:hover img {
+      transform: scale(1.05);
+      opacity: 0.6;
+    }
+    .art-item-label {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #aaa;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .art-item:hover .art-item-label { opacity: 1; }
+    .art-item.hidden { display: none; }
+
+    /* ══════════════════════════════
+       COMIC READER PAGE
+    ══════════════════════════════ */
+    #comicPage {
+      width: 100%;
+      padding: 40px 0 60px;
+    }
+    #comicPage h2 {
+      font-size: 36px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .comic-subtitle {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #444;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .comic-strip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 0 20px;
+    }
+    .comic-page-wrap {
+      width: 100%;
+      max-width: 680px;
+    }
+    .comic-page-wrap img {
+      width: 100%;
+      display: block;
+      border: 1px solid #1a1a1a;
+      cursor: zoom-in;
+    }
+    .comic-page-num {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #2a2a2a;
+      text-align: right;
+      padding: 4px 2px 0;
+      margin-bottom: 36px;
+    }
+
+    /* ══════════════════════════════
+       LIGHTBOX
+    ══════════════════════════════ */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.94);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 88vw;
+      max-height: 82vh;
+      object-fit: contain;
+      border: 1px solid #333;
+    }
+    #lightbox-meta {
+      margin-top: 14px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #555;
+    }
+    #lightbox-close {
+      position: fixed;
+      top: 20px; right: 28px;
+      font-size: 28px;
+      color: #555;
+      cursor: pointer;
+    }
+    #lightbox-close:hover { color: #fff; }
+
+    @media (max-width: 600px) {
+      .art-grid { grid-template-columns: repeat(2, 1fr); }
+      #galleryPage { width: 96vw; }
+      .comic-page-wrap { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <main>
-    <!-- Home Page -->
-    <section id="homePage" class="page active">
-      <div class="name" id="nameGlitch" data-text="Kartikeya Nisal">Kartikeya Nisal</div>
-      <nav>
-        <a class="glitch-link" data-text="About me" onclick="showPage('aboutPage')">About me</a>
-        <a class="glitch-link" data-text="GitHub" href="https://github.com/krttikeya" target="_blank">GitHub</a>
-        <a class="glitch-link" data-text="LinkedIn" href="https://in.linkedin.com/in/krttikeya" target="_blank">LinkedIn</a>
-        <a class="glitch-link" data-text="Contact" onclick="showPage('contactPage')">Contact</a>
-      </nav>
-    </section>
+<canvas id="dither-bg"></canvas>
+<main>
 
-    <!-- About Page -->
-    <section id="aboutPage" class="page content-page">
-      <h2>About Me</h2>
-      <p>Hello, My name is Kartikeya.</p>
-      <p>• I'm studying Electronics & Telecommunication Engineering</p>
-      <p>• Currently interested in FPGAs</p>
-      <div class="back-btn" onclick="showPage('homePage')">← Back</div>
-    </section>
+  <!-- ① HOME -->
+  <section id="homePage" class="page active">
+    <div class="name" id="nameGlitch" data-text="Kartikeya Nisal">Kartikeya Nisal</div>
+    <nav>
+      <a class="glitch-link" data-text="About me"  onclick="showPage('aboutPage')">About me</a>
+      <a class="glitch-link" data-text="GitHub"     href="https://github.com/krttikeya" target="_blank">GitHub</a>
+      <a class="glitch-link" data-text="LinkedIn"   href="https://in.linkedin.com/in/krttikeya" target="_blank">LinkedIn</a>
+      <a class="glitch-link" data-text="My Art"     onclick="showPage('artMenuPage')">My Art</a>
+      <a class="glitch-link" data-text="Contact"    onclick="showPage('contactPage')">Contact</a>
+    </nav>
+  </section>
 
-    <!-- Contact Page -->
-    <section id="contactPage" class="page content-page">
-      <h2>Contact</h2>
-      <p>📫 How to reach me: @krttikeya (Instagram, Linkedin)</p>
-      <div class="back-btn" onclick="showPage('homePage')">← Back</div>
-    </section>
-  </main>
-  <script>
-    const glitchChars = 'क░<>/श्री\ङ \|𑀱!ञ@#$%^&*';
-    
-    function showPage(pageId) {
-      document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-      });
-      document.getElementById(pageId).classList.add('active');
+  <!-- ② ABOUT -->
+  <section id="aboutPage" class="page content-page">
+    <h2>About Me</h2>
+    <p>Hello, My name is Kartikeya.</p>
+    <p>• I'm studying Electronics & Telecommunication Engineering</p>
+    <p>• Currently interested in FPGAs</p>
+    <button class="back-btn" onclick="showPage('homePage')">← Back</button>
+  </section>
+
+  <!-- ③ ART SUB-MENU -->
+  <section id="artMenuPage" class="page">
+    <h2>My Art</h2>
+    <nav>
+      <a class="glitch-link" data-text="Digital illustrations and animations" href="https://www.instagram.com/oonnuc" target="_blank">Digital illustrations and animations</a>
+    </nav>
+    <button class="back-btn" onclick="showPage('homePage')">← Back</button>
+  </section>
+
+  <!-- ④ GALLERY -->
+  <section id="galleryPage" class="page">
+    <h2>Illustrations / Digital Art</h2>
+
+    <div class="art-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="illustration">Illustration</button>
+      <button class="filter-btn" data-filter="digital">Digital</button>
+      <button class="filter-btn" data-filter="sketch">Sketch / WIP</button>
+    </div>
+
+    <!--
+      HOW TO ADD YOUR ART
+      ───────────────────
+      Copy any .art-item block, set:
+        data-category  →  illustration | digital | sketch
+        data-title     →  shown in lightbox
+        img src        →  your image URL
+    -->
+    <div class="art-grid">
+
+      <div class="art-item" data-category="illustration" data-title="Illustration 1">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Illustration 1" />
+        <div class="art-item-label">ILLUSTRATION</div>
+      </div>
+
+      <div class="art-item" data-category="digital" data-title="Digital Piece 1">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Digital 1" />
+        <div class="art-item-label">DIGITAL</div>
+      </div>
+
+      <div class="art-item" data-category="sketch" data-title="Sketch 1">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Sketch 1" />
+        <div class="art-item-label">SKETCH / WIP</div>
+      </div>
+
+      <div class="art-item" data-category="illustration" data-title="Illustration 2">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Illustration 2" />
+        <div class="art-item-label">ILLUSTRATION</div>
+      </div>
+
+      <div class="art-item" data-category="digital" data-title="Digital Piece 2">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Digital 2" />
+        <div class="art-item-label">DIGITAL</div>
+      </div>
+
+      <div class="art-item" data-category="sketch" data-title="Sketch 2">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Sketch 2" />
+        <div class="art-item-label">SKETCH / WIP</div>
+      </div>
+
+    </div>
+
+    <button class="back-btn" onclick="showPage('artMenuPage')">← Back</button>
+  </section>
+
+  <!-- ⑤ COMIC READER -->
+  <section id="comicPage" class="page">
+    <h2>My Comic</h2>
+    <p class="comic-subtitle">scroll to read</p>
+
+    <!--
+      HOW TO ADD COMIC PAGES
+      ──────────────────────
+      Each .comic-page-wrap = one A4 page.
+      Replace YOUR_IMAGE_URL_HERE with your actual URL.
+      Copy-paste the block to add more pages — they appear in order.
+      Clicking a page opens it in the lightbox for a closer look.
+    -->
+    <div class="comic-strip">
+
+      <div class="comic-page-wrap">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Page 1" onclick="openLightbox(this, 'Page 1')" />
+        <div class="comic-page-num">01</div>
+      </div>
+
+      <div class="comic-page-wrap">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Page 2" onclick="openLightbox(this, 'Page 2')" />
+        <div class="comic-page-num">02</div>
+      </div>
+
+      <div class="comic-page-wrap">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Page 3" onclick="openLightbox(this, 'Page 3')" />
+        <div class="comic-page-num">03</div>
+      </div>
+
+      <div class="comic-page-wrap">
+        <img src="YOUR_IMAGE_URL_HERE" alt="Page 4" onclick="openLightbox(this, 'Page 4')" />
+        <div class="comic-page-num">04</div>
+      </div>
+
+    </div>
+
+    <button class="back-btn" onclick="showPage('artMenuPage')">← Back</button>
+  </section>
+
+  <!-- ⑥ CONTACT -->
+  <section id="contactPage" class="page content-page">
+    <h2>Contact</h2>
+    <p>📫 How to reach me: @krttikeya (Instagram, Linkedin)</p>
+    <button class="back-btn" onclick="showPage('homePage')">← Back</button>
+  </section>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span id="lightbox-close" onclick="closeLightbox()">✕</span>
+  <img id="lightbox-img" src="" alt="" />
+  <div id="lightbox-meta"></div>
+</div>
+
+<script>
+  // ── Animated dithered gradient background ──
+  (function() {
+    const canvas = document.getElementById('dither-bg');
+    const ctx = canvas.getContext('2d');
+    const SCALE = 8; // larger dots = far fewer pixels to compute
+    let W, H, cols, rows, imgData, pixels;
+
+    // Bayer 4x4 matrix (normalized 0–1)
+    const BAYER4 = [
+       0/16,  8/16,  2/16, 10/16,
+      12/16,  4/16, 14/16,  6/16,
+       3/16, 11/16,  1/16,  9/16,
+      15/16,  7/16, 13/16,  5/16
+    ];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      cols = Math.ceil(W / SCALE);
+      rows = Math.ceil(H / SCALE);
+      // Use a small offscreen ImageData the size of the dither grid
+      imgData = ctx.createImageData(cols, rows);
+      pixels = imgData.data;
     }
-    
-    function glitchText(element, duration = 1000) {
-      const originalText = element.getAttribute('data-text');
-      const length = originalText.length;
-      let frame = 0;
-      const totalFrames = duration / 50;
-      let isRunning = true;
-      
-      const interval = setInterval(() => {
-        if (!isRunning) {
-          clearInterval(interval);
-          element.textContent = originalText;
-          return;
-        }
-        
-        let glitchedText = '';
-        const revealIndex = Math.floor((frame / totalFrames) * length);
-        
-        for (let i = 0; i < length; i++) {
-          if (i < revealIndex) {
-            glitchedText += originalText[i];
-          } else if (originalText[i] === ' ') {
-            glitchedText += ' ';
+
+    function sampleGradient(nx, ny, t) {
+      const blobs = [
+        { x: 0.5 + 0.35 * Math.sin(t * 0.31),        y: 0.5 + 0.35 * Math.cos(t * 0.27),        r: 0.55, s: 0.18 },
+        { x: 0.2 + 0.25 * Math.cos(t * 0.19 + 1.2),  y: 0.3 + 0.25 * Math.sin(t * 0.23 + 0.5),  r: 0.40, s: 0.14 },
+        { x: 0.8 + 0.18 * Math.sin(t * 0.37 + 2.1),  y: 0.7 + 0.20 * Math.cos(t * 0.29 + 1.8),  r: 0.35, s: 0.12 },
+        { x: 0.5 + 0.40 * Math.cos(t * 0.13 + 3.0),  y: 0.85 + 0.12 * Math.sin(t * 0.41 + 0.9), r: 0.30, s: 0.10 },
+      ];
+      let v = 0;
+      for (const b of blobs) {
+        const dx = nx - b.x, dy = ny - b.y;
+        v += b.r * Math.exp(-(dx * dx + dy * dy) / (2 * b.s * b.s));
+      }
+      return Math.min(1, v);
+    }
+
+    let lastT = -1;
+    const FPS = 20; // plenty for a slow drifting background
+    const INTERVAL = 1000 / FPS;
+
+    function render(ts) {
+      requestAnimationFrame(render);
+      if (ts - lastT < INTERVAL) return; // skip frame
+      lastT = ts;
+
+      const t = ts * 0.001;
+
+      // Write into small ImageData (cols×rows), then scale-draw onto canvas
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const nx = col / cols;
+          const ny = row / rows;
+          const brightness = sampleGradient(nx, ny, t);
+          const threshold = BAYER4[(row % 4) * 4 + (col % 4)];
+          const i = (row * cols + col) * 4;
+          if (brightness > threshold) {
+            const v = Math.floor(brightness * 102);
+            pixels[i]   = 0;              // R
+            pixels[i+1] = Math.floor(v * 0.4); // G
+            pixels[i+2] = v;              // B
           } else {
-            glitchedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+            pixels[i] = pixels[i+1] = pixels[i+2] = 0;
           }
+          pixels[i+3] = 255;
         }
-        
-        element.textContent = glitchedText;
-        frame++;
-        
-        if (frame >= totalFrames) {
-          clearInterval(interval);
-          element.textContent = originalText;
-          isRunning = false;
-        }
-      }, 50);
-      
-      return () => { isRunning = false; };
+      }
+
+      // Draw tiny image scaled up — one GPU blit instead of thousands of fillRects
+      ctx.putImageData(imgData, 0, 0);
+      ctx.drawImage(canvas, 0, 0, cols, rows, 0, 0, W, H);
     }
-    
-    // Initial glitch effect on name
-    const nameElement = document.getElementById('nameGlitch');
-    setTimeout(() => glitchText(nameElement, 1500), 100);
-    
-    // Hover glitch on name
-    nameElement.addEventListener('mouseenter', () => {
-      glitchText(nameElement, 400);
-    });
-    
-    // Hover glitch on links
-    document.querySelectorAll('.glitch-link').forEach(link => {
-      link.addEventListener('mouseenter', () => {
-        glitchText(link, 400);
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(render);
+  })();
+</script>
+
+<script>
+  const glitchChars = 'क░<>/श्री\ङ \|𑀱!ञ@#$%^&*';
+
+  /* ── Page navigation ── */
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // pages that scroll need flex-start so content isn't cut off
+    const scrollable = ['galleryPage', 'comicPage'];
+    document.querySelector('main').style.alignItems =
+      scrollable.includes(pageId) ? 'flex-start' : 'center';
+  }
+
+  /* ── Glitch effect ── */
+  function glitchText(element, duration = 1000) {
+    const originalText = element.getAttribute('data-text');
+    const length = originalText.length;
+    let frame = 0;
+    const totalFrames = duration / 50;
+    let isRunning = true;
+
+    const interval = setInterval(() => {
+      if (!isRunning) { clearInterval(interval); element.textContent = originalText; return; }
+      let out = '';
+      const revealIndex = Math.floor((frame / totalFrames) * length);
+      for (let i = 0; i < length; i++) {
+        if (i < revealIndex)              out += originalText[i];
+        else if (originalText[i] === ' ') out += ' ';
+        else out += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      }
+      element.textContent = out;
+      frame++;
+      if (frame >= totalFrames) { clearInterval(interval); element.textContent = originalText; isRunning = false; }
+    }, 50);
+
+    return () => { isRunning = false; };
+  }
+
+  /* Glitch on load + hover — applies to ALL .glitch-link elements across all pages */
+  const nameEl = document.getElementById('nameGlitch');
+  setTimeout(() => glitchText(nameEl, 1500), 100);
+  nameEl.addEventListener('mouseenter', () => glitchText(nameEl, 400));
+
+  document.querySelectorAll('.glitch-link').forEach(link => {
+    link.addEventListener('mouseenter', () => glitchText(link, 400));
+  });
+
+  /* ── Gallery filters ── */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      document.querySelectorAll('.art-item').forEach(item => {
+        item.classList.toggle('hidden',
+          filter !== 'all' && item.getAttribute('data-category') !== filter);
       });
     });
-  </script>
+  });
+
+  /* ── Gallery lightbox trigger ── */
+  document.querySelectorAll('.art-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      if (img) openLightbox(img, item.getAttribute('data-title'));
+    });
+  });
+
+  /* ── Lightbox ── */
+  function openLightbox(imgEl, title) {
+    document.getElementById('lightbox-img').src = imgEl.src;
+    document.getElementById('lightbox-meta').textContent = title;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
 </body>
 </html>
